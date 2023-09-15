@@ -1,12 +1,19 @@
-// import { Category } from '@prisma/client';
-// import prisma from '../../../shared/prisma';
-
 import { Category } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 
 const createCategory = async (data: Category): Promise<Category> => {
+  const categoryInfo = await prisma.category.findFirst({
+    where: {
+      title: data.title,
+    },
+  });
+
+  if (categoryInfo) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Category already exist!');
+  }
+
   const result = await prisma.category.create({
     data,
   });
