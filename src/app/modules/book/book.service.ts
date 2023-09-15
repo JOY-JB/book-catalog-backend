@@ -147,8 +147,64 @@ const getBooksByCategory = async (
   };
 };
 
+const getBookById = async (id: string): Promise<Book> => {
+  const bookData = await prisma.book.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!bookData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Book not Found!');
+  }
+
+  return bookData;
+};
+
+const updateBookById = async (id: string, payload: Book): Promise<Book> => {
+  const bookData = await prisma.book.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!bookData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Book not Found!');
+  }
+
+  const result = await prisma.book.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+  return result;
+};
+
+const deleteBookById = async (id: string): Promise<Book> => {
+  const bookData = await prisma.book.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!bookData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Book not Found!');
+  }
+
+  const result = await prisma.book.delete({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const bookService = {
   createBook,
   getAllBooks,
   getBooksByCategory,
+  getBookById,
+  updateBookById,
+  deleteBookById,
 };
